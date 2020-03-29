@@ -1,6 +1,5 @@
 const { Blog } = require('../../models/blog');
 const { Tag } = require('../../models/tag');
-const validate = require('../../middleware/validate');
 const slugify = require('slug');
 const { errorHandler } = require('../../helpers/dbErrorHandler');
 

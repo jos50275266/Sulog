@@ -1,11 +1,12 @@
-const slugify = require('slug');
-const { errorHandler } = require('../../helpers/dbErrorHandler');
 const { Category } = require('../../models/category');
 const { Blog } = require('../../models/blog');
+const slugify = require('slug');
+const { errorHandler } = require('../../helpers/dbErrorHandler');
 
 exports.create = async (req, res) => {
 	const { name } = req.body;
 	// new table --> slugify --> new-table
+	
 	let slug = slugify(name).toLowerCase();
 	let category = new Category({ name, slug });
 

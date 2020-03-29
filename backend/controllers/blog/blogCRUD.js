@@ -34,6 +34,12 @@ exports.create = (req, res) => {
 			});
 		}
 
+		if (!excerpt || excerpt.length < 10) {
+			return res.status(400).json({
+				error: '10 글자 이상의 소개글을 작성해주세요'
+			});
+		}
+
 		if (!body || !body.length) {
 			return res.status(400).json({
 				error: '입력하신 내용의 길이가 너무 짧습니다.'
@@ -49,12 +55,6 @@ exports.create = (req, res) => {
 		if (!tags || tags.length === 0) {
 			return res.status(400).json({
 				error: '적어도 한 개 이상의 테그를 선택해주세요'
-			});
-		}
-
-		if (!excerpt || excerpt.length < 10) {
-			return res.status(400).json({
-				error: '10 글자 이상의 소개글을 작성해주세요'
 			});
 		}
 
@@ -97,7 +97,6 @@ exports.list = async (req, res) => {
 			.populate('tags', '_id name slug')
 			.populate('postedBy', '_id name username')
 			.select('_id title slug excerpt categories tags postedBy createdBy updatedBy');
-
 		return res.status(200).json(allBlogs);
 	} catch (err) {
 		return res.status(400).json({ error: errorHandler(err) });
@@ -117,7 +116,6 @@ exports.list_Blogs_Categories_Tags = async (req, res) => {
 			.skip(skip)
 			.limit(limit)
 			.select('_id title slug excerpt categories tags postedBy createdBy updatedAt');
-
 		let categories = await Category.find({});
 		let tags = await Tag.find({});
 
@@ -135,7 +133,6 @@ exports.read = async (req, res) => {
 			.populate('tags', '_id name slug')
 			.populate('postedBy', '_id name username')
 			.select('_id title body excerpt slug mtitle mdesc categories tags postedBy createdBy updatedAt');
-
 		return res.status(200).json(blog);
 	} catch (err) {
 		return res.status(400).json({ error: errorHandler(err) });
