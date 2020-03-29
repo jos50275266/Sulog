@@ -21,7 +21,7 @@ const ProfileUpdate = () => {
 
 	const token = getCookie('token');
 
-	const { username, photo, name, email, about, password, error, success, loading, photo, userData } = values;
+	const { username, username_for_photo, name, email, about, password, error, success, loading, userData } = values;
 
 	const init = () => {
 		getProfile(token)
@@ -31,6 +31,7 @@ const ProfileUpdate = () => {
 					setValues({
 						...values,
 						username: data.username,
+						username_for_photo: data.username,
 						name: data.name,
 						email: data.email,
 						about: data.about
@@ -106,7 +107,7 @@ const ProfileUpdate = () => {
 		</div>
 	);
 
-	const ProfileUpdateForm = () => {
+	const profileUpdateForm = () => {
 		<form onSubmit={handleSubmit}>
 			<div className="form-group">
 				<label className="btn btn-outline-info">
@@ -152,3 +153,5 @@ const ProfileUpdate = () => {
 		</React.Fragment>
 	);
 };
+
+export default ProfileUpdate;
