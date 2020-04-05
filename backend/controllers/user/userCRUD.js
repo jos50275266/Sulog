@@ -1,6 +1,7 @@
 const { User } = require('../../models/user');
 const { Blog } = require('../../models/blog');
 const { errorHandler } = require('../../helpers/dbErrorHandler');
+const slugify = require('slug');
 const _ = require('lodash');
 const formidable = require('formidable');
 const fs = require('fs');
@@ -41,7 +42,20 @@ exports.update = (req, res) => {
 			});
 		}
 		let user = req.profile;
-		user = _.extend(user, fields);
+
+		// user's existing role and email before update
+		let existingRole = user.role;
+		let existingEmail = user.email;
+
+		if (fields && fields.username && fields.username.length > 15) {
+			return res.status(400).json({
+				error: '사용자이름은 15 글자 이하여야 합니다.'
+			});
+		}
+
+		if (fields.username) {
+			fields.username = slugify(fields.username).toLowerCase();
+		}
 
 		if (fields.password && fields.password.length < 6) {
 			return res.status(400).json({
@@ -49,10 +63,14 @@ exports.update = (req, res) => {
 			});
 		}
 
+		user = _.extend(user, fields);
+		user.role = existingRole;
+		user.email = existingEmail;
+
 		if (files.photo) {
 			if (files.photo.size > 10000000) {
 				return res.status(400).json({
-					error: 'Image should be less than 1mb'
+					error: '이미지 크기는 반드시 1mb 미만이여야 합니다.'
 				});
 			}
 			user.photo.data = fs.readFileSync(files.photo.path);
@@ -60,11 +78,11 @@ exports.update = (req, res) => {
 		}
 
 		try {
-			let user = await user.save();
+			let updatedUser = await user.save();
 
-			user.hashed_password = undefined;
-			user.salt = undefined;
-			user.photo = undefined;
+			updatedUser.hashed_password = undefined;
+			updatedUser.salt = undefined;
+			updatedUser.photo = undefined;
 
 			return res.status(200).json(user);
 		} catch (err) {
@@ -91,8 +109,9 @@ exports.getWriterProfile = async (req, res) => {
 	const username = req.params.username.toLowerCase();
 
 	try {
-		let user = User.findOne({ username });
-		return res.send(user);
+		let user = User.findOne({ username }).select('photo');
+		res.set('Content-Type', user.photo.contentType);
+		return res.send(user.photo.data);
 	} catch (err) {
 		return res.status(400).json({ error: '블로그를 찾지 못했습니다.' });
 	}

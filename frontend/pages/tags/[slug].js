@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Layout from './../../components/Layout';
 import { singleTag } from './../../actions/tag';
 import Card from './../../components/blog/Card';
-import { API, DOMAIN, APP_NAME, FB_APP_ID } from '../../config';
+import { DOMAIN, APP_NAME, FB_APP_ID } from '../../config';
 
 const Tag = ({ tag, blogs, query }) => {
 	const head = () => (
@@ -54,7 +54,7 @@ Tag.getInitialProps = ({ query }) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				console.log(data.blogs);
+				// console.log(data.blogs);
 				return { tag: data.tag, blogs: data.blogs, query };
 			}
 		})

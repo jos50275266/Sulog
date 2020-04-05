@@ -97,9 +97,7 @@ const CreateBlog = ({ router }) => {
 					setCategories([]);
 					setTags([]);
 
-					setTimeout(() => {
-						Router.push('/blogs');
-					}, 1000);
+					Router.push('/blogs');
 				}
 			})
 			.catch((err) => console.log(err));

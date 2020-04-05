@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Layout from './../../components/Layout';
 import renderHTML from 'react-render-html';
 import { writerData } from '../../actions/user';
-// import { convertFromJSONToHTML } from "../../helpers/dataParser.js";
 import { useState, useEffect } from 'react';
 import { singleBlog, listRelated } from './../../actions/blog';
 import SmallCard from './../../components/blog/SmallCard';
@@ -59,8 +58,6 @@ const SingleBlog = ({ blog, query }) => {
 	};
 
 	useEffect(() => {
-		// console.log("blog", blog);
-		// console.log(convertFromJSONToHTML(blog.body));
 		initialzeLikeNum();
 		getUserProfile(blog.postedBy.username);
 		loadRelated();
@@ -124,29 +121,29 @@ const SingleBlog = ({ blog, query }) => {
 				<section
 					style={{
 						marginLeft: 'auto',
-						marginRight: 'auto',
-						backgroundColor: '#FFE783'
+						marginRight: 'auto'
 					}}
-					className="col-12 col-sm-10 col-md-10 col-lg-8 col-xl-8"
+					className="col-12 col-sm-10 col-md-10 col-lg-8 col-xl-8 border border-white"
 				>
 					<div className="row">
 						<div className="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3" style={{ border: '0' }}>
 							<Link href={`/profile/${blog.postedBy.username}`}>
 								<img
 									className="rounded-circle p-2"
-									src={`${API}/user/photo/${writer.username}`}
+									src={`${API}/user/photo/${blog.postedBy.username}`}
 									alt="프로필이미지가 없습니다."
 									style={{ height: '170px', width: '170px' }}
 								/>
 							</Link>
 						</div>
-						<div className="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 pt-5 pb-5" style={{ border: '0' }}>
+						<div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2" />
+						<div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 pt-5" style={{ border: '0' }}>
 							<h4>
 								<Link href={`/profile/${blog.postedBy.username}`}>
 									<a>{blog.postedBy.name}</a>
 								</Link>
 							</h4>
-							<p>{writer.about}</p>
+							<p>{blog.postedBy.about}</p>
 						</div>
 					</div>
 					<hr />
@@ -214,7 +211,7 @@ const SingleBlog = ({ blog, query }) => {
 
 					<footer className="container mt-5">
 						<hr />
-						<h2 className="bg-info text-center pt-2 pb-2 h2">관련 글</h2>
+						<h2 className="bg-success text-center pt-2 pb-2 h2">관련 글</h2>
 						<section className="row m-5">{showRelatedBlog()}</section>
 						<br />
 						<br />

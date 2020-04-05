@@ -1,8 +1,8 @@
 // https://codepen.io/htschmed/pen/RMEEzM
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from '../components/Layout';
-// import '../public/home.css';
 import Link from 'next/link';
+import '../public/home.css';
 
 const Index = () => {
 	return (
@@ -44,7 +44,7 @@ const Index = () => {
 						<FontAwesomeIcon icon="tools" style={{ color: '#3B287E' }} />
 					</h1>
 				</div>
-				<div className="container bg-color">
+				<div className="container">
 					<div className="row">
 						<div className="col-lg-4 mb-5">
 							<div className="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
@@ -113,10 +113,7 @@ const Index = () => {
 			<section className="showcase">
 				<div className="container-fluid p-0">
 					<div className="row no-gutters">
-						<div
-							className="col-lg-6 order-lg-2 text-white showcase-img"
-							style={{ backgroundImage: `url('../public/page.jpg)` }}
-						/>
+						<div className="col-lg-6 order-lg-2 text-white showcase-img" />
 						<div className="col-lg-6 order-lg-1 my-auto showcase-text">
 							<h1 className="display-4 pb-5 text-center">
 								<b>Sulog</b> 기술 스택
@@ -129,10 +126,7 @@ const Index = () => {
 						</div>
 					</div>
 					<div className="row no-gutters">
-						<div
-							className="col-lg-6 text-white showcase-img"
-							style={{ backgroundImage: `url('../public/page.jpg)` }}
-						/>
+						<div className="col-lg-6 text-white showcase-img" />
 						<div className="col-lg-6 my-auto showcase-text">
 							<h2>Updated For Bootstrap 4</h2>
 							<p className="lead mb-0">
@@ -143,10 +137,7 @@ const Index = () => {
 						</div>
 					</div>
 					<div className="row no-gutters">
-						<div
-							className="col-lg-6 order-lg-2 text-white showcase-img"
-							style={{ backgroundImage: `url('../public/page.jpg)` }}
-						/>
+						<div className="col-lg-6 order-lg-2 text-white showcase-img" />
 						<div className="col-lg-6 order-lg-1 my-auto showcase-text">
 							<h2>Easy to Use &amp; Customize</h2>
 							<p className="lead mb-0">

@@ -2,7 +2,6 @@ import fetch from 'isomorphic-fetch';
 import { API } from '../config';
 
 export const emailContactForm = (data) => {
-	// console.log("data", data);
 	let emailEndPoint;
 
 	if (data.authorEmail) emailEndPoint = `${API}/contact-blog-author`;

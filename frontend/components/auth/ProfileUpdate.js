@@ -1,13 +1,14 @@
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { getCookie } from '../../actions/authHelpers';
+import Router from 'next/router';
 import { updateUser } from '../../actions/auth';
+import { getCookie } from '../../actions/authHelpers';
 import { getProfile, update } from '../../actions/user';
 import { API } from '../../config';
 
 const ProfileUpdate = () => {
 	const [ values, setValues ] = useState({
 		username: '',
-		username_for_photo: '',
 		name: '',
 		email: '',
 		about: '',
@@ -16,56 +17,48 @@ const ProfileUpdate = () => {
 		success: false,
 		loading: false,
 		photo: '',
-		userData: process.browser && new FormData()
+		userData: ''
 	});
 
 	const token = getCookie('token');
 
-	const { username, username_for_photo, name, email, about, password, error, success, loading, userData } = values;
+	const { username, name, email, about, password, error, success, loading, photo, userData } = values;
 
 	const init = () => {
-		getProfile(token)
-			.then((data) => {
-				if (data.error) setValues({ ...values, error: data.error });
-				else
-					setValues({
-						...values,
-						username: data.username,
-						username_for_photo: data.username,
-						name: data.name,
-						email: data.email,
-						about: data.about
-					});
-			})
-			.catch((err) => console.log(err));
+		getProfile(token).then((data) => {
+			if (data.error) {
+				setValues({ ...values, error: data.error });
+			} else {
+				setValues({
+					...values,
+					username: data.username,
+					name: data.name,
+					email: data.email,
+					about: data.about
+				});
+			}
+		});
 	};
 
 	useEffect(() => {
 		init();
-		setValues({ ...values, userData: new FormData() });
-	});
+	}, []);
 
 	const handleChange = (name) => (e) => {
 		const value = name === 'photo' ? e.target.files[0] : e.target.value;
-		userData.set(name, value);
-		// console.log(...userData);
-		setValues({
-			...values,
-			[name]: value,
-			userData,
-			error: false,
-			success: false
-		});
+		let userFormData = new FormData();
+		userFormData.set(name, value);
+		setValues({ ...values, [name]: value, userData: userFormData, error: false, success: false });
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		setValues({ ...values, loading: true });
-
 		update(token, userData)
 			.then((data) => {
-				if (data.error) console.log('data.error', data.error);
-				else
+				if (data.error) {
+					setValues({ ...values, error: data.error, success: false, loading: false });
+				} else {
 					updateUser(data, () => {
 						setValues({
 							...values,
@@ -78,16 +71,13 @@ const ProfileUpdate = () => {
 							loading: false
 						});
 					});
+
+					alert('성공적으로 프로필이 업데이트 되었습니다.');
+					Router.push('/blogs');
+				}
 			})
 			.catch((err) => console.log(err));
 	};
-
-	const InputForm = (label, name, type, valueProperty) => (
-		<div className="form-group">
-			<label className="text-muted">{label}</label>
-			<input onChange={handleChagne({ name })} type={type} value={valueProperty} className="form-control" />
-		</div>
-	);
 
 	const showError = () => (
 		<div className="alert alert-danger" style={{ display: error ? '' : 'none' }}>
@@ -97,17 +87,17 @@ const ProfileUpdate = () => {
 
 	const showSuccess = () => (
 		<div className="alert alert-success" style={{ display: success ? '' : 'none' }}>
-			Profile updated
+			프로필이 성공적으로 업데이트되었습니다...
 		</div>
 	);
 
 	const showLoading = () => (
 		<div className="alert alert-info" style={{ display: loading ? '' : 'none' }}>
-			Loading...
+			로딩중...
 		</div>
 	);
 
-	const profileUpdateForm = () => {
+	const profileUpdateForm = () => (
 		<form onSubmit={handleSubmit}>
 			<div className="form-group">
 				<label className="btn btn-outline-info">
@@ -115,41 +105,56 @@ const ProfileUpdate = () => {
 					<input onChange={handleChange('photo')} type="file" accept="image/*" hidden />
 				</label>
 			</div>
-			<InputForm label="사용자 이름" name="username" type="text" value={username} />
-			<InputForm label="이름" name="name" type="text" value={name} />
+			<div className="form-group">
+				<label className="text-muted">Username</label>
+				<input onChange={handleChange('username')} type="text" value={username} className="form-control" />
+			</div>
+			<div className="form-group">
+				<label className="text-muted">Name</label>
+				<input onChange={handleChange('name')} type="text" value={name} className="form-control" />
+			</div>
+			<div className="form-group">
+				<label className="text-muted">
+					Email: <small>이메일은 규정상 업데이트가 불가능합니다...</small>
+				</label>
+				<input onChange={handleChange('email')} type="text" value={email} className="form-control" />
+			</div>
 			<div className="form-group">
 				<label className="text-muted">About</label>
 				<textarea onChange={handleChange('about')} type="text" value={about} className="form-control" />
 			</div>
-			<InputForm label="비밀번호" name="password" type="password" value={password} />
-			<div>
-				{showSuccess()}
-				{showError()}
-				{showLoading()}
+			<div className="form-group">
+				<label className="text-muted">Password</label>
+				<input onChange={handleChange('password')} type="password" value={password} className="form-control" />
 			</div>
 			<div>
-				<button type="submit" className="btn btn-primary" disabled={!username || !name || !email}>
-					업데이트
+				<button type="submit" className="btn btn-primary">
+					프로필 업데이트
 				</button>
 			</div>
-		</form>;
-	};
+		</form>
+	);
 
 	return (
 		<React.Fragment>
-			<section className="container">
+			<div className="container">
 				<div className="row">
 					<div className="col-md-4">
 						<img
-							src={`${API}/user/photo/${username_for_photo}`}
+							src={`${API}/user/photo/${username}`}
 							className="img img-fluid img-thumbnail mb-3"
 							style={{ maxHeight: 'auto', maxWidth: '100%' }}
 							alt="user profile"
 						/>
 					</div>
-					<div className="col-md-8 mb-5">{profileUpdateForm()}</div>
+					<div className="col-md-8 mb-5">
+						{showSuccess()}
+						{showError()}
+						{showLoading()}
+						{profileUpdateForm()}
+					</div>
 				</div>
-			</section>
+			</div>
 		</React.Fragment>
 	);
 };

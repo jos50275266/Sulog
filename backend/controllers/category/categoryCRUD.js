@@ -6,7 +6,7 @@ const { errorHandler } = require('../../helpers/dbErrorHandler');
 exports.create = async (req, res) => {
 	const { name } = req.body;
 	// new table --> slugify --> new-table
-	
+
 	let slug = slugify(name).toLowerCase();
 	let category = new Category({ name, slug });
 
@@ -47,9 +47,34 @@ exports.read = async (req, res, next) => {
 exports.remove = async (req, res) => {
 	const slug = req.params.slug.toLowerCase();
 	// {index: true} 한 이유, slug 위주로 queries 문 작성
+
+	// return res.status(404).json({message: "블로그 생성에 사용된 카테고리는 삭제할 수 없습니다..."})
+
 	try {
-		await Category.findOneAndRemove({ slug });
-		return res.status(200).json({ message: '카테고리가 성공적으로 삭제되었습니다.' });
+		let removedCategory = await Category.find({ slug }).select('_id');
+		let blogs = await Blog.find({})
+			.populate('categories', 'name')
+			.select(
+				'-photo -tags -like -title -body -excerpt -mtitle -mdesc -createdAt -updatedAt -_id -slug -postedBy -__v'
+			);
+
+		let usedCategoryList = [];
+
+		blogs.forEach((blog) => {
+			blog.categories.forEach((innerCategory) => {
+				usedCategoryList.push(innerCategory._id.toString());
+			});
+		});
+
+		let removedCategoryId = removedCategory[0]._id.toString();
+		let finder = usedCategoryList.includes(removedCategoryId);
+
+		if (!finder) {
+			await Category.findOneAndRemove({ slug });
+			return res.status(200).json({ message: '카테고리가 성공적으로 삭제되었습니다.' });
+		} else {
+			return res.status(400).json({ error: '블로그 생성에 사용된 카테고리는 삭제할 수 없습니다...' });
+		}
 	} catch (err) {
 		return res.status(400).json({ error: errorHandler(err) });
 	}

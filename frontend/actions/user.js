@@ -30,7 +30,7 @@ export const getProfile = (token) => {
 };
 
 export const update = (token, user) => {
-	return fetch(`${API}/user/profile`, {
+	return fetch(`${API}/user/update`, {
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',
@@ -39,8 +39,11 @@ export const update = (token, user) => {
 		body: user
 	})
 		.then((response) => {
-			if (response.status === 401) return handleResponse(response);
-			else response.json();
+			if (response.status === 401) {
+				return handleResponse(response);
+			} else {
+				return response.json();
+			}
 		})
 		.catch((err) => console.log(err));
 };
@@ -52,6 +55,8 @@ export const writerData = (username) => {
 			Accept: 'application/json'
 		}
 	})
-		.then((response) => response.json())
+		.then((response) => {
+				response.json();
+		})
 		.catch((err) => console.log(err));
 };

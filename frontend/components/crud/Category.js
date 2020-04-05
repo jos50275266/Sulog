@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { getCookie } from '../../actions/authHelpers';
-import Link from 'next/link';
-
 import { create } from '../../actions/category.js';
+import Link from 'next/link';
 
 const Category = () => {
 	const [ values, setValues ] = useState({

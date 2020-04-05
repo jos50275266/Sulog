@@ -7,10 +7,11 @@ const CategoryListComponent = () => {
 	const [ values, setValues ] = useState({
 		categories: [],
 		removed: false,
-		reload: false
+		reload: false,
+		error: ''
 	});
 
-	const { categories, removed, reload } = values;
+	const { categories, removed, reload, error } = values;
 	const token = getCookie('token');
 
 	useEffect(
@@ -47,14 +48,20 @@ const CategoryListComponent = () => {
 	const deleteCategory = (slug) => {
 		removeCategory(slug, token)
 			.then((data) => {
-				if (data.error) console.log(data.error);
-				else
+				// console.log(data.error);
+				if (data.error) {
+					setValues({
+						...values,
+						error: data.error
+					});
+				} else {
 					setValues({
 						...values,
 						name: '',
 						removed: !removed,
 						reload: !reload
 					});
+				}
 			})
 			.catch((err) => console.log(err));
 	};
@@ -63,8 +70,12 @@ const CategoryListComponent = () => {
 		if (removed) return <p className="text-danger">카테고리가 제거됨!</p>;
 	};
 
+	const showError = () => {
+		if (error) return <p className="text-danger">{error}</p>;
+	};
+
 	const mouseMoveHandler = (e) => {
-		setValues({ ...values, removed: false });
+		setValues({ ...values, removed: false, error: '' });
 	};
 
 	return (
@@ -76,6 +87,7 @@ const CategoryListComponent = () => {
 			</div>
 			<h1>All Categories</h1>
 			{showRemoved()}
+			{showError()}
 			<div onMouseMove={mouseMoveHandler}>{categories && categories.length > 0 && showCategories()}</div>
 		</React.Fragment>
 	);

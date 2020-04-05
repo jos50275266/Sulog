@@ -32,7 +32,11 @@ const UserProfile = ({ user, blogs, query }) => {
 			return (
 				<div className="mt-4 mb-4" key={index}>
 					<Link href={`/blogs/${blog.slug}`}>
-						<a className="lead">{blog.title}</a>
+						<a className="lead text-dark" style={{ textDecoration: 'none' }}>
+							{blog.title} <small>- {blog.excerpt}</small>
+							<br />
+							<small>{moment(user.createdAt).fromNow()} 작성됨</small>
+						</a>
 					</Link>
 				</div>
 			);
@@ -58,10 +62,10 @@ const UserProfile = ({ user, blogs, query }) => {
 											/>
 										</div>
 										<div className="col-md-8">
-											<h5>{user.name}</h5>
-											<p className="text-muted">{moment(user.createdAt).fromNow()} 가입했습니다.</p>
+											<h4>{user.name}</h4>
+											<p className="text-muted">{user.about}</p>
 
-											<h5 className="card-title bg-primary pt-4 pb-4 pl-4 pr-4 text-white mt-4">
+											<h5 className="card-title bg-info pt-4 pb-4 pl-4 pr-4 text-white mt-4">
 												{user.name}님이 최근 작성한 글
 											</h5>
 
@@ -78,22 +82,10 @@ const UserProfile = ({ user, blogs, query }) => {
 
 				<div className="container pb-5">
 					<div className="row">
-						<div className="col-md-6">
+						<div className="col-md-12">
 							<div className="card">
 								<div className="card-body">
-									<h5 className="card-title bg-primary pt-4 pb-4 pl-4 pr-4 text-white">
-										{user.name}님이 최근 작성한 글
-									</h5>
-
-									{showUserBlogs()}
-								</div>
-							</div>
-						</div>
-
-						<div className="col-md-6">
-							<div className="card">
-								<div className="card-body">
-									<h5 className="card-title bg-primary pt-4 pb-4 pl-4 pr-4 text-light">
+									<h5 className="card-title bg-info pt-4 pb-4 pl-4 pr-4 text-light">
 										{user.name} 연락처
 									</h5>
 									<br />

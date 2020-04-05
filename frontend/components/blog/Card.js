@@ -45,7 +45,7 @@ const Card = ({ blog }) => {
 		));
 
 	return (
-		<section className="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 bg-white border border-white">
+		<section className="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 bg-white border border-white">
 			<article>
 				<ul className="blog-post">
 					<li>

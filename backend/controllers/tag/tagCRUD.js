@@ -50,8 +50,30 @@ exports.remove = async (req, res, next) => {
 	const slug = req.params.slug.toLowerCase();
 	// {index: true} 한 이유, slug 위주로 queries 문 작성
 	try {
-		await Tag.findOneAndRemove({ slug });
-		return res.status(200).json({ message: '태그가 성공적으로 삭제되었습니다.' });
+		let removedTag = await Tag.find({ slug }).select('_id');
+		let blogs = await Blog.find({})
+			.populate('tags', 'name')
+			.select(
+				'-photo -categories -like -title -body -excerpt -mtitle -mdesc -createdAt -updatedAt -_id -slug -postedBy -__v'
+			);
+
+		let usedTagList = [];
+
+		blogs.forEach((blog) => {
+			blog.tags.forEach((innerTag) => {
+				usedTagList.push(innerTag._id.toString());
+			});
+		});
+
+		let removedTagId = removedTag[0]._id.toString();
+		let finder = usedTagList.includes(removedTagId);
+
+		if (!finder) {
+			await Tag.findOneAndRemove({ slug });
+			return res.status(200).json({ message: '태그가 성공적으로 삭제되었습니다.' });
+		} else {
+			return res.status(400).json({ error: '블로그 생성에 사용된 태그는 삭제할 수 없습니다...' });
+		}
 	} catch (err) {
 		return res.status(400).json({ error: errorHandler(err) });
 	}

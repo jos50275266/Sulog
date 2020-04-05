@@ -19,8 +19,8 @@ const BlogUpdate = ({ router }) => {
 	const [ categories, setCategories ] = useState([]);
 	const [ tags, setTags ] = useState([]);
 
-	const [ checked, setChecked ] = useState([]); // categories
-	const [ checkedTag, setCheckedTag ] = useState([]); // tags
+	const [ checked, setChecked ] = useState([]);
+	const [ checkedTag, setCheckedTag ] = useState([]);
 
 	const [ values, setValues ] = useState({
 		title: '',

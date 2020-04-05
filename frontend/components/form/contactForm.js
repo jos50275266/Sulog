@@ -16,15 +16,10 @@ const ContactForm = ({ authorEmail }) => {
 
 	const clickSubmit = (e) => {
 		e.preventDefault();
-		setValues({ ...values, buttonText: '메세지 전송중입니다...' });
-		console.log('authorEmail:', authorEmail);
-		console.log('name:', name);
-		console.log('email:', email);
-		console.log('message', message);
+		setValues({ ...values, buttonText: 'Sending...' });
 
 		emailContactForm({ authorEmail, name, email, message })
 			.then((data) => {
-				console.log(data);
 				if (data.error) {
 					setValues({ ...values, error: data.error });
 				} else {

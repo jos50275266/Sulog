@@ -7,10 +7,11 @@ const TagListComponent = () => {
 	const [ values, setValues ] = useState({
 		tags: [],
 		removed: false,
-		reload: false
+		reload: false,
+		error: ''
 	});
 
-	let { tags, removed, reload } = values;
+	let { tags, removed, reload, error } = values;
 	const token = getCookie('token');
 
 	useEffect(
@@ -47,18 +48,35 @@ const TagListComponent = () => {
 	const deleteTag = (slug) => {
 		removeTag(slug, token)
 			.then((data) => {
-				if (data.error) console.log(data.error);
-				else setValues({ name: '', removed: !removed, reload: !reload });
+				console.log(data);
+				// console.log(data.error);
+				if (data.error) {
+					setValues({
+						...values,
+						error: data.error
+					});
+				} else {
+					setValues({
+						...values,
+						name: '',
+						removed: !removed,
+						reload: !reload
+					});
+				}
 			})
 			.catch((err) => console.log(err));
 	};
 
 	const showRemoved = () => {
-		if (removed) return <p className="text-danger">카테고리가 제거됨!</p>;
+		if (removed) return <p className="text-danger">태그가 제거됨!</p>;
+	};
+
+	const showError = () => {
+		if (error) return <p className="text-danger">{error}</p>;
 	};
 
 	const mouseMoveHandler = (e) => {
-		setValues({ ...values, removed: false, reload: false });
+		setValues({ ...values, removed: false, error: '' });
 	};
 
 	return (
@@ -70,6 +88,7 @@ const TagListComponent = () => {
 			</div>
 			<h1>All Tags</h1>
 			{showRemoved()}
+			{showError()}
 			<div onMouseMove={mouseMoveHandler}>{tags && tags.length > 0 && showTags()}</div>
 		</React.Fragment>
 	);

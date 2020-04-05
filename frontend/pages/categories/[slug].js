@@ -2,13 +2,13 @@ import Head from 'next/head';
 import Layout from './../../components/Layout';
 import { singleCategory } from './../../actions/category';
 import Card from './../../components/blog/Card';
-import { API, DOMAIN, APP_NAME, FB_APP_ID } from '../../config';
+import { DOMAIN, APP_NAME, FB_APP_ID } from '../../config';
 
 const Category = ({ category, blogs, query }) => {
 	const head = () => (
 		<Head>
 			<title>
-				{category.title} | {APP_NAME}
+				{category.name} | {APP_NAME}
 			</title>
 			<meta name="description" content={`Sulog ${category.name}`} />
 			<link rel="canonical" href={`${DOMAIN}/categories/${query.slug}`} />

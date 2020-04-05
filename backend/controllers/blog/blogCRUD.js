@@ -131,7 +131,7 @@ exports.read = async (req, res) => {
 		let blog = await Blog.findOne({ slug })
 			.populate('categories', '_id name slug')
 			.populate('tags', '_id name slug')
-			.populate('postedBy', '_id name username')
+			.populate('postedBy', '_id name username about')
 			.select('_id title body excerpt slug mtitle mdesc categories tags postedBy createdBy updatedAt');
 		return res.status(200).json(blog);
 	} catch (err) {
