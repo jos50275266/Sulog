@@ -8,7 +8,7 @@ const AdminIndex = () => {
 			<Admin>
 				<div className="container-fluid">
 					<div className="col-md-12 pt-5 pb-5">
-						<h2>Admin Dashboard</h2>
+						<h2>관리자 페이지</h2>
 					</div>
 					<div className="col-md-8">
 						<ul>

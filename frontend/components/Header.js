@@ -14,18 +14,15 @@ Router.onRouteChangeError = (url) => NProgress.done();
 
 const Header = () => {
 	const [ isOpen, setIsOpen ] = useState(false);
-	const [ name, setName ] = useState('');
+	const [ userInfo, setUserInfo ] = useState({ auth: false, name: '', role: 0 });
 
 	const toggle = () => {
 		setIsOpen(!isOpen);
 	};
 
-	useEffect(
-		() => {
-			if (isAuth()) setName(isAuth().name);
-		},
-		[ name ]
-	);
+	useEffect(() => {
+		if (isAuth()) setUserInfo({ auth: isAuth(), name: isAuth().name, role: isAuth().role });
+	}, []);
 
 	return (
 		<header>
@@ -36,25 +33,46 @@ const Header = () => {
 				<NavbarToggler onClick={toggle} />
 				<Collapse isOpen={isOpen} navbar>
 					<Nav className="ml-auto" navbar>
-						<React.Fragment>
-							<NavItem>
-								<Link href="/blogs">
-									<NavLink>Sulog</NavLink>
-								</Link>
-							</NavItem>
-							<NavItem>
-								<Link href="/contact">
-									<NavLink>Contact</NavLink>
-								</Link>
-							</NavItem>
-							<NavItem>
-								<Link href="/search">
-									<NavLink>검색</NavLink>
-								</Link>
-							</NavItem>
-						</React.Fragment>
-
-						{!isAuth() && (
+						{userInfo.auth ? (
+							<React.Fragment>
+								<NavItem>
+									<Link href="/blogs">
+										<NavLink>Sulog</NavLink>
+									</Link>
+								</NavItem>
+								<NavItem>
+									<Link href="/contact">
+										<NavLink>Contact</NavLink>
+									</Link>
+								</NavItem>
+								<NavItem>
+									<Link href="/search">
+										<NavLink>검색</NavLink>
+									</Link>
+								</NavItem>
+								{userInfo.role === 1 ? (
+									<NavItem>
+										<Link href="/admin">
+											<NavLink>{`${userInfo.name}`}</NavLink>
+										</Link>
+									</NavItem>
+								) : (
+									<NavItem>
+										<Link href="/user">
+											<NavLink>{`${userInfo.name}`}</NavLink>
+										</Link>
+									</NavItem>
+								)}
+								<NavItem>
+									<NavLink onClick={() => logout(() => Router.replace(`/signin`))}>로그아웃</NavLink>
+								</NavItem>
+								<NavItem>
+									<a href="/user/crud/blog" className="btn btn-primary text-light">
+										글쓰기
+									</a>
+								</NavItem>
+							</React.Fragment>
+						) : (
 							<React.Fragment>
 								<NavItem>
 									<Link href="/signin">
@@ -65,37 +83,6 @@ const Header = () => {
 									<Link href="/signup">
 										<NavLink>회원가입</NavLink>
 									</Link>
-								</NavItem>
-							</React.Fragment>
-						)}
-
-						{isAuth() &&
-						isAuth().role === 0 && (
-							<NavItem>
-								<Link href="/user">
-									<NavLink>{`${name}`}</NavLink>
-								</Link>
-							</NavItem>
-						)}
-
-						{isAuth() &&
-						isAuth().role === 1 && (
-							<NavItem>
-								<Link href="/admin">
-									<NavLink>{`${name}`}</NavLink>
-								</Link>
-							</NavItem>
-						)}
-
-						{isAuth() && (
-							<React.Fragment>
-								<NavItem>
-									<NavLink onClick={() => logout(() => Router.replace(`/signin`))}>로그아웃</NavLink>
-								</NavItem>
-								<NavItem>
-									<a href="/user/crud/blog" className="btn btn-primary text-light">
-										글쓰기
-									</a>
 								</NavItem>
 							</React.Fragment>
 						)}
